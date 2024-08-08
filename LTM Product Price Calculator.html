@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LTM - Product Price Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select {
+            width: calc(100% - 10px);
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .result {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>LTM - Product Price Calculator</h2>
+
+    <label for="rubberPrice">Rubber Price per Kg (LKR):</label>
+    <input type="number" id="rubberPrice" value="1650">
+
+    <label for="polyesterPrice">Polyester Price per Kg (LKR):</label>
+    <input type="number" id="polyesterPrice" value="475">
+
+    <label for="rubberPercent">Rubber Percentage (%):</label>
+    <input type="number" id="rubberPercent" value="35" oninput="updatePercentage('rubber')">
+
+    <label for="polyesterPercent">Polyester Percentage (%):</label>
+    <input type="number" id="polyesterPercent" value="65" oninput="updatePercentage('polyester')">
+
+    <label for="profitMargin">Profit Margin (%):</label>
+    <input type="number" id="profitMargin" value="5">
+	
+	    <label for="weightUnit">Weight Unit:</label>
+    <select id="weightUnit">
+        <option value="grams">Grams</option>
+        <option value="kg">Kilograms</option>
+    </select>
+
+    <label for="productWeight">Product Weight:</label>
+    <input type="number" id="productWeight">
+
+    <label for="usdRate">USD Exchange Rate (LKR to USD):</label>
+    <input type="number" id="usdRate" value="300" step="0.01">
+
+    <button onclick="calculatePrice()">Calculate</button>
+
+    <div id="totalCost" class="result">Total Cost: LKR 0.00</div>
+    <div id="sellingPrice" class="result">Selling Price: LKR 0.00</div>
+    <div id="totalCostUSD" class="result">Total Cost: USD 0.00</div>
+    <div id="sellingPriceUSD" class="result">Selling Price: USD 0.00</div>
+</div>
+
+<script>
+    function updatePercentage(changedField) {
+        const rubberPercentInput = document.getElementById('rubberPercent');
+        const polyesterPercentInput = document.getElementById('polyesterPercent');
+
+        let rubberPercent = parseFloat(rubberPercentInput.value) || 0;
+        let polyesterPercent = parseFloat(polyesterPercentInput.value) || 0;
+
+        if (changedField === 'rubber') {
+            polyesterPercent = 100 - rubberPercent;
+            polyesterPercentInput.value = polyesterPercent.toFixed(2);
+        } else if (changedField === 'polyester') {
+            rubberPercent = 100 - polyesterPercent;
+            rubberPercentInput.value = rubberPercent.toFixed(2);
+        }
+    }
+
+    function calculatePrice() {
+        const rubberPrice = parseFloat(document.getElementById('rubberPrice').value) || 0;
+        const polyesterPrice = parseFloat(document.getElementById('polyesterPrice').value) || 0;
+        const rubberPercent = (parseFloat(document.getElementById('rubberPercent').value) || 0) / 100;
+        const polyesterPercent = (parseFloat(document.getElementById('polyesterPercent').value) || 0) / 100;
+        const profitMargin = (parseFloat(document.getElementById('profitMargin').value) || 0) / 100;
+        const weightInput = parseFloat(document.getElementById('productWeight').value) || 0;
+        const usdRate = parseFloat(document.getElementById('usdRate').value) || 300; // Default value for USD exchange rate
+        const weightUnit = document.getElementById('weightUnit').value;
+
+        let weightInKg;
+
+        // Convert weight to kilograms based on the selected unit
+        if (weightUnit === 'grams') {
+            weightInKg = weightInput / 1000;
+        } else if (weightUnit === 'kg') {
+            weightInKg = weightInput;
+        } else {
+            weightInKg = 0;
+        }
+
+        // Calculate the cost per kilogram of the product
+        const totalCostPerKg = (rubberPrice * rubberPercent) + (polyesterPrice * polyesterPercent);
+
+        // Calculate the total cost for the given weight in kilograms
+        const totalCost = totalCostPerKg * weightInKg;
+
+        // Calculate the selling price with profit margin
+        const sellingPrice = totalCost + (totalCost * profitMargin);
+
+        // Convert costs to USD
+        const totalCostUSD = totalCost / usdRate;
+        const sellingPriceUSD = sellingPrice / usdRate;
+
+        document.getElementById('totalCost').innerText = `Total Cost: LKR ${totalCost.toFixed(2)}`;
+        document.getElementById('sellingPrice').innerText = `Selling Price: LKR ${sellingPrice.toFixed(2)}`;
+        document.getElementById('totalCostUSD').innerText = `Total Cost: USD ${totalCostUSD.toFixed(2)}`;
+        document.getElementById('sellingPriceUSD').innerText = `Selling Price: USD ${sellingPriceUSD.toFixed(2)}`;
+    }
+</script>
+
+</body>
+</html>

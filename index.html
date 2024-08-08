@@ -84,8 +84,10 @@
 
     <div id="totalCost" class="result">Total Cost: LKR 0.00</div>
     <div id="sellingPrice" class="result">Selling Price: LKR 0.00</div>
+	<div id="profit" class="result">Profit: LKR 0.00</div>
     <div id="totalCostUSD" class="result">Total Cost: USD 0.00</div>
     <div id="sellingPriceUSD" class="result">Selling Price: USD 0.00</div>
+	<div id="profitUSD" class="result">Profit: USD 0.00</div>
 </div>
 
 <script>
@@ -134,15 +136,21 @@
 
         // Calculate the selling price with profit margin
         const sellingPrice = totalCost + (totalCost * profitMargin);
+		
+		// Calculate the profit
+        const profit = sellingPrice - totalCost;
 
         // Convert costs to USD
         const totalCostUSD = totalCost / usdRate;
         const sellingPriceUSD = sellingPrice / usdRate;
+		const profitUSD = profit / usdRate;
 
         document.getElementById('totalCost').innerText = `Total Cost: LKR ${totalCost.toFixed(2)}`;
         document.getElementById('sellingPrice').innerText = `Selling Price: LKR ${sellingPrice.toFixed(2)}`;
+		document.getElementById('profit').innerText = `Profit: LKR ${profit.toFixed(2)}`;
         document.getElementById('totalCostUSD').innerText = `Total Cost: USD ${totalCostUSD.toFixed(2)}`;
         document.getElementById('sellingPriceUSD').innerText = `Selling Price: USD ${sellingPriceUSD.toFixed(2)}`;
+		document.getElementById('profitUSD').innerText = `Profit: USD ${profitUSD.toFixed(2)}`;
     }
 </script>
 
